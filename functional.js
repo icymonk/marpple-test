@@ -119,4 +119,4 @@ async function test() {
 }
 
 
-setTimeout(test, 1000)
+test()
