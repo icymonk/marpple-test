@@ -11,7 +11,7 @@ const concatBase = curry((arr, args) => Array.isArray(args) ? reduce(concat, arg
 const concat = (arr, args) => then(args, concatBase(arr))
 
 const pipeline = (arg, ...fs) => reduce((acc, f) => f(acc), fs, arg)
-const map = curry((f, arr) => reduce((acc, v) => push(acc, f(v)), arr, []))
+const map = curry((f, arr) => reduce((acc, v) => then(f(v), v => push(acc, v)), arr, []))
 const range = num => Array(num).fill().map(pick(1))
 const flat = arr => reduce(concat, arr, [])
 
