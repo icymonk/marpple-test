@@ -4,7 +4,6 @@ async function functionalTest() {
     map(a => [Promise.resolve(a), a, [a, Promise.resolve(a), Promise.resolve(a)]]),
     flat,
     take(5),
-    log,
   )
   const res2 = await go(
     range(100000),
@@ -37,17 +36,27 @@ async function functionalTest() {
 }
 
 async function spinRectangle() {
+  const status = {
+    top: 200,
+    right: 200,
+    time: 2000,
+    ratio: 0.85,
+  }
+  const applyRatio = (status) => status.time *= status.ratio
+  const changeDirection = (status) => (status.top *= -1, status.right *= -1)
+  const adjustRatio = (status, ratio = 0.85) => {
+    status.ratio *= 1.01
+    status.time > 2000 && (status.ratio = ratio)
+  }
   const rectangle = $('#rectangle')
-  animation({ top: 50, right: 50 }, 0, rectangle)
-  let top = 200, right = 200, time = 2000, ratio = 0.1305
-  while(time > 0.1) {
-    await animation({ right, opacity: 1 }, time, rectangle)
-    time *= ratio
-    await animation({ top, opacity: -1 }, time, rectangle)
-    top *= -1
-    right *= -1
-    time *= ratio
-    ratio *= 1.01
-    time > 2000 && (ratio = 0.85)
+
+  await animation({ top: 50, right: 50 }, 0, rectangle)
+  while(true) {
+    await animation({ right: status.right }, status.time, rectangle)
+    applyRatio(status)
+    await animation({ top: status.top }, status.time, rectangle)
+    applyRatio(status)
+    changeDirection(status)
+    adjustRatio(status)
   }
 }
