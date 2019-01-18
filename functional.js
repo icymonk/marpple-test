@@ -1,16 +1,21 @@
+const curry = f => (a, ..._) => !_.length ? (..._) => f(a, ..._) : f(a, ..._)
+const curry2 = f => (a, b, ..._) => !_.length ? (..._) => f(a, b, ..._) : f(a, b, ..._)
+
 const log = a => (console.log(a), a)
 const identify = a => a
 const push = (arr, v) => (arr.push(v), arr)
 const pick = index => (...args) => args[index]
+const copy = obj => Object.assign({}, obj)
+const set = curry(([key, value], obj) => (obj[key] = value, obj))
+const set2 = curry((obj, [key, value]) => (obj[key] = value, obj))
 
 const hasIter = a => Boolean(a && a[Symbol.iterator])
-const getIter = a => hasIter(a) ? a[Symbol.iterator]() : values(a)
+const getIter = a => hasIter(a) ? a[Symbol.iterator]() : entries(a)
 
 const values = function* (obj) { for (const value of obj) yield value }
 const entries = function* (obj) { for (const key in obj) yield [key, obj[key]] }
 const range = function *(num = Infinity) { for (let i = 0; i < num; i++) yield i }
 
-const curry = f => (a, ..._) => !_.length ? (..._) => f(a, ..._) : f(a, ..._)
 const go = (...fs) => reduce((acc, f) => f(acc), fs)
 
 const isPromise = a => a instanceof Promise
@@ -33,8 +38,9 @@ const reduce = curry(function(f, acc, coll) {
     return acc
   }()
 })
-const map = curry(function* (f, coll) { for (const cur of coll) { yield f(cur) } })
-const each = curry((f, coll) => reduce((_, cur) => (f(cur), coll), coll))
+const map = curry(function* (f, coll) { for (const cur of coll) yield f(cur) })
+const each = curry(function (f, coll) { for (const cur of coll) f(cur); return coll })
+
 const take = curry((num, coll) => {
   const result = []
   if(!num) return result
