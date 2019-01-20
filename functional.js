@@ -2,7 +2,7 @@ const curry = f => (a, ..._) => !_.length ? (..._) => f(a, ..._) : f(a, ..._)
 const curry2 = f => (a, b, ..._) => !_.length ? (..._) => f(a, b, ..._) : f(a, b, ..._)
 
 const log = a => (console.log(a), a)
-const identify = a => a
+const identity = a => a
 const push = (arr, v) => (arr.push(v), arr)
 const pick = index => (...args) => args[index]
 const copy = obj => Object.assign({}, obj)
